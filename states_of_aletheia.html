@@ -1,1 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>states of aletheia</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    font-family: Georgia, 'Times New Roman', serif;
+    overflow: hidden;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html, body { background: #111110; }
+    .token { color: #888780; }
+    .token:hover { color: #f1efe8; }
+    #center-text { color: #5f5e5a; }
+    .field-label { color: #5f5e5a; }
+    .field-line { color: #b4b2a9; border-bottom-color: #444441; }
+    .field-line::placeholder { color: #444441; }
+    #form-area { border-top-color: #2c2c2a; }
+    #submit-label { color: #444441; }
+    #submit-btn { color: #5f5e5a; border-color: #444441; }
+    #submit-btn:hover { color: #f1efe8; border-color: #888780; background: #1a1a18; }
+    #echo { color: #5f5e5a; }
+  }
+
+  #field {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .token {
+    position: absolute;
+    font-size: 12px;
+    color: #b4b2a9;
+    cursor: default;
+    user-select: none;
+    transition: color 0.5s ease, opacity 0.5s ease, transform 1.8s ease;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .token:hover { color: #2c2c2a; }
+
+  #center {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  #center-text {
+    font-size: 12px;
+    color: #d3d1c7;
+    letter-spacing: 0.1em;
+    line-height: 2.4;
+    font-style: italic;
+  }
+
+  #form-area {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    border-top: 0.5px solid #d3d1c7;
+    padding-top: 16px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    font-size: 10px;
+    color: #b4b2a9;
+    min-width: 88px;
+    letter-spacing: 0.06em;
+    font-family: Georgia, serif;
+  }
+
+  .field-line {
+    flex: 1;
+    border: none;
+    border-bottom: 0.5px solid #d3d1c7;
+    background: transparent;
+    font-size: 11px;
+    color: #5f5e5a;
+    outline: none;
+    padding: 2px 0;
+    font-family: Georgia, serif;
+  }
+
+  .field-line::placeholder {
+    color: #d3d1c7;
+    font-style: italic;
+  }
+
+  #submit-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  #submit-label {
+    font-size: 9px;
+    color: #b4b2a9;
+    letter-spacing: 0.12em;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+
+  #submit-btn {
+    font-size: 10px;
+    color: #888780;
+    background: none;
+    border: 0.5px solid #d3d1c7;
+    padding: 4px 14px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    border-radius: 1px;
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+    font-family: Georgia, serif;
+  }
+
+  #submit-btn:hover {
+    color: #2c2c2a;
+    border-color: #888780;
+  }
+
+  #echo {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 9px;
+    color: #b4b2a9;
+    letter-spacing: 0.14em;
+    opacity: 0;
+    transition: opacity 1.4s;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+
+  #attribution {
+    position: absolute;
+    bottom: 10px;
+    right: 22px;
+    font-size: 8px;
+    color: #d3d1c7;
+    letter-spacing: 0.08em;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div id="field">
+  <div id="echo">—</div>
+
+  <div id="center">
+    <div id="center-text">
+      no artist<br>
+      no machine<br>
+      no website<br>
+      no content
+    </div>
+  </div>
+
+  <div id="form-area">
+    <div class="field-row">
+      <span class="field-label">category change</span>
+      <input class="field-line" type="text" placeholder="——" id="f-category" />
+    </div>
+    <div class="field-row">
+      <span class="field-label">author change</span>
+      <input class="field-line" type="text" placeholder="——" id="f-author" />
+    </div>
+    <div class="field-row">
+      <span class="field-label">content change</span>
+      <input class="field-line" type="text" placeholder="——" id="f-content" />
+    </div>
+    <div class="field-row">
+      <span class="field-label">state change</span>
+      <input class="field-line" type="text" placeholder="——" id="f-state" />
+    </div>
+    <div id="submit-area">
+      <span id="submit-label">states of aletheia</span>
+      <button id="submit-btn" onclick="handleSubmit()">disclose</button>
+    </div>
+  </div>
+
+  <div id="attribution">patapaint / states of aletheia</div>
+</div>
+
+<script>
+const words = [
+  "beyond","letheia","aletheia","odd in","ramp direction",
+  "input","output","dasein","ready-to-hand","present-at-hand",
+  "standard","aleatoric","design","minimal","balanced","critical",
+  "normal","constituent","effusion","sillage","drydown",
+  "substrate condition","etiology","formulary","prognosis layer",
+  "symptom cluster","untreated areas","medicated varnish",
+  "friction study","accumulation anxiety","rubbing","polishing",
+  "anti-","de-","beyond","pataphysics","exception","impossible form",
+  "impersonal being","appear","beyond time","and lo",
+  "discovery of criticism","the ramp goes nowhere",
+  "appear beyond time","find out","make the most",
+  "of your aletheia","it's a man's lot","imposing for photographers",
+  "impossible form","zip change","state change","age change",
+  "name change","address change","nothing disclosed",
+  "the prompt assumes a prompter","no direction","and lo! beyond"
+];
+
+const field = document.getElementById('field');
+const placed = [];
+
+function placeTokens() {
+  const W = field.offsetWidth || 800;
+  const H = field.offsetHeight || 600;
+  const used = [];
+
+  words.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'token';
+    el.textContent = w;
+
+    let x, y, attempts = 0;
+    do {
+      x = 18 + Math.random() * (W - 200);
+      y = 18 + Math.random() * (H - 220);
+      attempts++;
+    } while (attempts < 40 && used.some(p => Math.abs(p[0]-x) < 110 && Math.abs(p[1]-y) < 20));
+
+    used.push([x, y]);
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.opacity = (0.12 + Math.random() * 0.30).toString();
+
+    el.addEventListener('mouseenter', () => {
+      el.style.opacity = '0.9';
+      el.style.transform = 'translate(' + ((Math.random()-0.5)*30) + 'px,' + ((Math.random()-0.5)*14) + 'px)';
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.opacity = (0.12 + Math.random() * 0.28).toString();
+      el.style.transform = '';
+    });
+
+    field.appendChild(el);
+    placed.push(el);
+  });
+}
+
+function handleSubmit() {
+  const ids = ['f-category','f-author','f-content','f-state'];
+  const vals = ids.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+  const echo = document.getElementById('echo');
+
+  if (vals.length === 0) {
+    echo.textContent = 'nothing disclosed';
+    echo.style.opacity = '1';
+    setTimeout(() => { echo.style.opacity = '0'; }, 3000);
+    placed.forEach(el => {
+      setTimeout(() => {
+        el.style.transform = 'translate(' + ((Math.random()-0.5)*40) + 'px,' + ((Math.random()-0.5)*18) + 'px)';
+        setTimeout(() => { el.style.transform = ''; }, 1800);
+      }, Math.random() * 700);
+    });
+    return;
+  }
+
+  const newWord = vals[Math.floor(Math.random() * vals.length)];
+  echo.textContent = newWord;
+  echo.style.opacity = '1';
+  setTimeout(() => { echo.style.opacity = '0'; }, 3200);
+
+  const W = field.offsetWidth || 800;
+  const H = field.offsetHeight || 600;
+  const el = document.createElement('div');
+  el.className = 'token';
+  el.textContent = newWord;
+  el.style.left = (40 + Math.random() * (W - 220)) + 'px';
+  el.style.top = (30 + Math.random() * (H - 240)) + 'px';
+  el.style.opacity = '0';
+  el.style.transition = 'opacity 1.4s ease, color 0.5s ease, transform 1.8s ease';
+  field.appendChild(el);
+  placed.push(el);
+
+  el.addEventListener('mouseenter', () => {
+    el.style.opacity = '0.9';
+    el.style.transform = 'translate(' + ((Math.random()-0.5)*30) + 'px,' + ((Math.random()-0.5)*14) + 'px)';
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.opacity = (0.15 + Math.random() * 0.28).toString();
+    el.style.transform = '';
+  });
+
+  setTimeout(() => { el.style.opacity = (0.15 + Math.random() * 0.35).toString(); }, 60);
+
+  ids.forEach(id => { document.getElementById(id).value = ''; });
+}
+
+placeTokens();
+
+setInterval(() => {
+  if (placed.length === 0) return;
+  const el = placed[Math.floor(Math.random() * placed.length)];
+  const prev = el.style.opacity;
+  el.style.transition = 'opacity 3s ease';
+  el.style.opacity = (0.08 + Math.random() * 0.35).toString();
+  setTimeout(() => {
+    el.style.opacity = prev;
+  }, 3000);
+}, 1800);
+</script>
+</body>
+</html>
